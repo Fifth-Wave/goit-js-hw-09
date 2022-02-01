@@ -1,0 +1,35 @@
+.timer {
+  display: flex;
+}
+
+.field {
+  margin-left: 10px;
+  width: 72px;
+  text-align: center;
+}
+
+.value {
+  font-size: 50px;
+  font-weight: normal;
+}
+
+.label {
+  text-transform: uppercase;
+}
+
+span {
+  display: block;
+}
+
+input {
+  height: 55px;
+  width: 250px;
+  font-size: 30px;
+  font-weight: normal;
+}
+
+button {
+  height: 55px;
+
+  font-size: 30px;
+}
