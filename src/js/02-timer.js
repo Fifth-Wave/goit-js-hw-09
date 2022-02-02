@@ -7,12 +7,11 @@ const el = {
   hoursNos: document.querySelector('[data-hours]'),
   minsNos: document.querySelector('[data-minutes]'),
   secondsNos: document.querySelector('[data-seconds]'),
-  //   input: document.querySelector('#datetime-picker'),
+  input: document.querySelector('#datetime-picker'),
   startBtn: document.querySelector('[data-start]'),
 };
 
-console.log(el.startBtn.hasAttribute('disabled'));
-
+el.startBtn.setAttribute('disabled', true);
 el.startBtn.addEventListener('click', onStartBtnClick);
 
 const options = {
@@ -20,14 +19,21 @@ const options = {
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates, dateStr) {
-    onInput(selectedDates, dateStr);
+  onClose(selectedDates) {
+    onInput(selectedDates);
   },
 };
+
+var timerTime;
+var timerId = null;
 
 flatpickr('#datetime-picker', options);
 
 function onInput(selectedDates) {
+  if (timerId) {
+    return;
+  }
+
   if (selectedDates[0].getTime() <= Date.now()) {
     el.startBtn.setAttribute('disabled', true);
     window.alert('Please choose a date in the future');
@@ -35,18 +41,37 @@ function onInput(selectedDates) {
   }
 
   el.startBtn.removeAttribute('disabled');
-  setTimer(selectedDates[0].getTime() - Date.now());
+  timerTime = selectedDates[0].getTime() - Date.now();
 }
 
 function setTimer(time) {
   const { days, hours, minutes, seconds } = convertMs(time);
-  el.daysNos.textContent = days;
-  el.hoursNos.textContent = hours;
-  el.minsNos.textContent = minutes;
-  el.secondsNos.textContent = seconds;
+  el.daysNos.textContent = addLeadingZero(days);
+  el.hoursNos.textContent = addLeadingZero(hours);
+  el.minsNos.textContent = addLeadingZero(minutes);
+  el.secondsNos.textContent = addLeadingZero(seconds);
 }
 
-function onStartBtnClick() {}
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
+
+function onStartBtnClick() {
+  el.input.setAttribute('disabled', true);
+  setTimer(timerTime);
+  timerId = setInterval(timerTickDown, 1000);
+  el.startBtn.setAttribute('disabled', true);
+}
+
+function timerTickDown() {
+  if (timerTime < 2000) {
+    clearInterval(timerId);
+    timerId = null;
+    el.input.removeAttribute('disabled');
+  }
+  timerTime -= 1000;
+  setTimer(timerTime);
+}
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
