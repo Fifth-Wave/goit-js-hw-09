@@ -1,6 +1,7 @@
 import '../sass/02-timer.scss';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const el = {
   daysNos: document.querySelector('[data-days]'),
@@ -36,7 +37,8 @@ function onInput(selectedDates) {
 
   if (selectedDates[0].getTime() <= Date.now()) {
     el.startBtn.setAttribute('disabled', true);
-    window.alert('Please choose a date in the future');
+    Notify.failure('Please choose a date in the future', { timeout: 3000 });
+
     return;
   }
 
