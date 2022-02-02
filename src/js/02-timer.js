@@ -11,6 +11,8 @@ const el = {
   startBtn: document.querySelector('[data-start]'),
 };
 
+console.log(el.startBtn.hasAttribute('disabled'));
+
 el.startBtn.addEventListener('click', onStartBtnClick);
 
 const options = {
@@ -23,10 +25,25 @@ const options = {
   },
 };
 
-const fp = flatpickr('#datetime-picker', options);
+flatpickr('#datetime-picker', options);
 
-function onInput(selectedDates, dateStr) {
-  console.dir(selectedDates);
+function onInput(selectedDates) {
+  if (selectedDates[0].getTime() <= Date.now()) {
+    el.startBtn.setAttribute('disabled', true);
+    window.alert('Please choose a date in the future');
+    return;
+  }
+
+  el.startBtn.removeAttribute('disabled');
+  setTimer(selectedDates[0].getTime() - Date.now());
+}
+
+function setTimer(time) {
+  const { days, hours, minutes, seconds } = convertMs(time);
+  el.daysNos.textContent = days;
+  el.hoursNos.textContent = hours;
+  el.minsNos.textContent = minutes;
+  el.secondsNos.textContent = seconds;
 }
 
 function onStartBtnClick() {}
